@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../header"); %>
+  <body>
+    <%- include("../menu"); %>
+    <form id="updateForm">
+    <!-- Material input -->
+    <div class="md-form">
+      <input type="text" id="director" class="form-control" value="<%= result.director %>" required />
+      <label for="director">Input Director</label>
+    </div>
+    <div class="md-form">
+      <input type="text" id="title" class="form-control" value="<%= result.title %>" required />
+      <label for="title">Input Title</label>
+    </div>
+</div>
+<div class="md-form">
+  <input type="number" id="year" class="form-control" value="<%= result.year %>" required />
+  <label for="year">Input Year</label>
+</div>
+    <button type=""submit" class="btn aqua-gradient">
+      저장
+    </button>
+  </form>
+    <%- include("../footer"); %>
+    <script>
+      $(function() {
+        $("#updateForm").submit((event) => {
+          event.preventDefault();
+          // 수정
+          const director = $("#director").val();
+          const title = $("#title").val();
+          const year = $("#year").val();
+
+          $.ajax({
+            url: "/api/movie/<%= result._id %>",
+            type: "PUT",
+            data: {director, title, year},
+          }).done(() => {
+            location.href="/api/movie/<%= result._id %>";
+          }).fail((request, status, error) => {
+            alert(request.responseText);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

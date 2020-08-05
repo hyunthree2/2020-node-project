@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("header"); %><%- include("footer"); %>
+  <head>
+    <style>
+      @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+      @import url(//cdn.rawgit.com/hiun/NanumSquare/master/NanumSquare.css);
+    </style>
+  </head>
+  <body>
+    <%- include("header"); %>
+    <div id="mysidenav" class="sidenav">
+      <a href="#" class="closebtn" onclick="closeNav()">x</a>
+      <a href="/main">메인</a>
+      <a href="/list">기록하기</a>
+      <a href="/api/project/stat">통계보기</a>
+      <a href="/profile">내 정보</a>
+    </div>
+    <button
+      type="button"
+      class="openmenu"
+      onclick="openNav()"
+      style="z-index: 2;"
+    >
+      🧡
+    </button>
+    <style>
+      /* 사이드바 스타일 */
+      .sidenav {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #fbc02d;
+        overflow-x: hidden;
+        transition: 0.5s ease-in-out;
+        padding-top: 60px;
+        font-family: "Nanum Square";
+        z-index: 3;
+      }
+      .sidenav a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 20px;
+        color: white;
+        display: block;
+        transition: 0.2s ease-in-out;
+      }
+      .sidenav a:hover,
+      .offcanvas a:focus {
+        color: #000;
+      }
+      .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px !important;
+        margin-left: 50px;
+      }
+      .openmenu:hover {
+        transition: 0.5s ease-in-out;
+      }
+      .openmenu {
+        font-size: 25px;
+        cursor: pointer;
+        transition: 0.5s ease-in-out;
+        border: 0;
+        outline: 0;
+        position: fixed;
+        top: 30px;
+        left: 30px;
+        box-shadow: 0px 0px 4px 1px #fbc02d;
+        border-radius: 20px;
+        color: #fbc02d;
+        background-color: #fbc02d;
+      }
+      .openmenu:focus {
+        outline: none;
+      }
+      .openmenu > i {
+        font-size: 40px;
+      }
+      /* 미디어쿼리 적용 */
+      @media screen and (max-height: 450px) {
+        .sidenav {
+          padding-top: 15px;
+        }
+        .sidenav a {
+          font-size: 18px;
+        }
+      }
+    </style>
+    <%- include("header"); %>
+  </body>
+  <script>
+    function openNav() {
+      document.getElementById("mysidenav").style.width = "250px";
+      $(".openmenu").hide();
+    }
+    function closeNav() {
+      document.getElementById("mysidenav").style.width = "0";
+      $(".openmenu").show();
+    }
+  </script>
+</html>

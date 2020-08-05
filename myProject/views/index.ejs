@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      body{
+        -ms-overflow-style: none;
+      }
+      ::-webkit-scrollbar{
+        display: none;
+      }
+      .background{
+        z-index: 1;
+        position: relative;
+      }
+      .btn1{
+        position:absolute;
+        z-index: 2;
+        left: 39.2vw;
+        top: 52.7vw;
+        font-size: 2vw;
+        opacity: 0;
+      }
+      .btn2{
+        position: absolute;
+        z-index: 2;
+        left:51.5vw;
+        top:52.5vw;
+        font-size: 2vw;
+        opacity:0;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include("header"); %> <%- include("footer"); %>
+    <div class="background">
+      <img class="parent" src="/images/main.png" style="width:100%;">
+    </div>
+    <div class="btn1">
+      <button type="button" onclick="location.href='/api/user/login'">
+        ㅤㅤㅤ
+      </button>
+    </div>
+    <div class="btn2">
+      <button type="button" onclick="location.href='/api/user/signup'">ㅤㅤㅤㅤ
+      </button>
+    </div>
+</html>

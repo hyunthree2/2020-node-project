@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("header"); %> <%- include("sidebar"); %>
+  <head>
+    <style>
+      body {
+        -ms-overflow-style: none;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      .floatbtn {
+        z-index: 2;
+        position: absolute;
+      }
+      .background {
+        z-index: 1;
+        position: relative;
+      }
+      .emo1,
+      .emo2,
+      .emo3,
+      .emo4,
+      .emo5 {
+        -webkit-transform: scale(1);
+        -moz-transform: scale(1);
+        -ms-transform: scale(1);
+        -o-transform: scale(1);
+        transform: scale(1);
+        -webkit-transition: 0.3s;
+        -moz-transition: 0.3s;
+        -ms-transition: 0.3s;
+        -o-transition: 0.3s;
+        transition: 0.3s;
+      }
+      .emo1:hover,
+      .emo2:hover,
+      .emo3:hover,
+      .emo4:hover,
+      .emo5:hover {
+        -webkit-transform: scale(2);
+        -moz-transform: scale(2);
+        -ms-transform: scale(2);
+        -o-transform: scale(2);
+        transform: scale(2);
+      }
+      .selected {
+        -webkit-transform: scale(2);
+        -moz-transform: scale(2);
+        -ms-transform: scale(2);
+        -o-transform: scale(2);
+        transform: scale(2);
+      }
+
+      .wc-calendar {
+        position: absolute;
+        z-index: 2;
+        width: 80vw;
+        left: 9.5vw;
+        top: 20vw;
+      }
+
+      .wc-calendar__header {
+        position: relative;
+        height: 40px;
+        border-bottom: 2px solid #fbc02d;
+        overflow: hidden;
+        text-align: center;
+      }
+      .wc-calendar__header__date {
+        display: inline-block;
+      }
+
+      .wc-calendar__btn {
+        height: 32px;
+        padding: 0 15px;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 12px;
+        line-height: 32px;
+        background-color: #fbc02d;
+        cursor: pointer;
+      }
+      .wc-calendar__btn:focus,
+      .wc-calendar__btn:active {
+        outline: none;
+      }
+
+      .wc-calendar__btn:hover {
+        background-color: #fbc02d;
+      }
+
+      .wc-calendar__btn--prev {
+        float: left;
+      }
+      .wc-calendar__btn--next {
+        float: right;
+      }
+
+      .wc-calendar__days-names,
+      .wc-calendar__days-list {
+        display: flex;
+        flex-wrap: wrap;
+        list-style: none;
+        padding: 0;
+      }
+
+      .wc-calendar__days-names {
+        border-bottom: 1px solid #fbc02d;
+      }
+
+      .wc-calendar__days-names__item,
+      .wc-calendar__days-list__item {
+        width: 14.2%;
+        flex-grow: 1;
+        text-align: center;
+      }
+
+      .wc-calendar__days-names__item {
+        padding-top: 10px;
+      }
+
+      .wc-calendar__days-list__item {
+        height: 60px;
+        line-height: 60px;
+        cursor: pointer;
+      }
+      /* 여기가 선택 칸 */
+      .wc-calendar__days-list__item--active {
+        color: #fff;
+        background-color: #fbc02d;
+      }
+      .wc-calendar__days-list__item--prev-month,
+      .wc-calendar__days-list__item--next-month {
+        color: fbc02d;
+      }
+      .wc-calendar__days-list__item--active.wc-calendar__days-list__item--prev-month,
+      .wc-calendar__days-list__item--active.wc-calendar__days-list__item--next-month {
+        border: 1px solid #fbc02d;
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background">
+      <img class="parent" src="/images/listbg.png" style="width: 100%;" />
+    </div>
+
+    <script>
+      class Calendar {
+        /**
+         * @constructor
+         * @param {string} container - represents calendar container DOM query
+         * @param {string} activeDateClass - represents custom class for selected date
+         * @param {Date} initialDate - represents initially selected calendar date
+         */
+        constructor({
+          container = "",
+          activeDateClass = "",
+          initialDate = new Date(),
+        } = {}) {
+          this.$container = container
+            ? document.querySelector(container)
+            : null;
+          this.activeDateClass = activeDateClass;
+
+          this.selectedDate = initialDate;
+          this.currentMonth = initialDate;
+          this.currentMonthDays = [];
+
+          // Months human readable names, to be used inside
+          // getFormattedDate() function
+          this.monthsNames = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+          // initizlize markup and bootstrap application events
+          this.generateMarkup();
+          this.bootstrapEvents();
+        }
+
+        /**
+         * Generate selected month visible dates
+         * @function buildCurrentMonthDays
+         */
+        buildCurrentMonthDays() {
+          var curYear = this.currentMonth.getFullYear(),
+            curMonth = this.currentMonth.getMonth(),
+            firstMonthDay = new Date(curYear, curMonth, 1),
+            lastMonthDay = new Date(curYear, curMonth + 1, 0);
+
+          // clear previously selected month generated days
+          this.currentMonthDays = [];
+
+          // push visible previous month days
+          for (let i = -firstMonthDay.getUTCDay(); i < 0; i++) {
+            this.currentMonthDays.push(new Date(curYear, curMonth, i));
+          }
+
+          // push current month days
+          for (let i = 1, lastDay = lastMonthDay.getDate(); i <= lastDay; i++) {
+            this.currentMonthDays.push(new Date(curYear, curMonth, i));
+          }
+
+          // push visible next month days
+          for (
+            let i = 1, daysAppend = 7 - lastMonthDay.getUTCDay();
+            i < daysAppend;
+            i++
+          ) {
+            this.currentMonthDays.push(new Date(curYear, curMonth + 1, i));
+          }
+        }
+
+        /**
+         * Generate 'days-list__item' element class
+         * @function getDayClass
+         * @return {string} - represents element class string
+         */
+        getDayClass(date) {
+          var classes = ["wc-calendar__days-list__item"],
+            curYear = this.currentMonth.getFullYear(),
+            curMonth = this.currentMonth.getMonth(),
+            firstMonthDay = new Date(curYear, curMonth, 1),
+            lastMonthDay = new Date(curYear, curMonth + 1, 0);
+
+          // if date is selectedDate
+          if (date.toDateString() === this.selectedDate.toDateString()) {
+            // add default and custom active classes
+            classes = classes.concat([
+              "wc-calendar__days-list__item--active",
+              this.activeDateClass,
+            ]);
+          }
+          // if date is from previous year
+          if (date.getMonth() === 11 && this.currentMonth.getMonth() === 0) {
+            // mark as previous month date
+            classes.push("wc-calendar__days-list__item--prev-month");
+            // if date is from next year
+          } else if (
+            date.getMonth() === 0 &&
+            this.currentMonth.getMonth() === 11
+          ) {
+            // mark as next month date
+            classes.push("wc-calendar__days-list__item--next-month");
+            // if date is from previous month
+          } else if (date.getMonth() < this.currentMonth.getMonth()) {
+            classes.push("wc-calendar__days-list__item--prev-month");
+            // if date is from next month
+          } else if (date.getMonth() > this.currentMonth.getMonth()) {
+            classes.push("wc-calendar__days-list__item--next-month");
+          }
+
+          // return element class string
+          return classes.join(" ");
+        }
+        /**
+         * Utility function for showing formatted date of type 'MonthName YYYY'
+         * @function gerFormattedDate
+         * @param {Date} date - represents date object which shall be formatted
+         * @return {string} - represents formatted date
+         */
+        getFormattedDate(date) {
+          return `${date.getFullYear()} ${this.monthsNames[date.getMonth()]}`;
+        }
+        /**
+         * Generate HTML string markup for visible calendar dates
+         * @function generateDaysMarkup
+         * @return {string} - represents HTML markup for currently selected month days
+         */
+        generateDaysMarkup() {
+          var days = [];
+          // build month days list
+          this.buildCurrentMonthDays();
+          // generate markup for each month day
+          this.currentMonthDays.forEach(
+            function (day) {
+              days.push(
+                `<li data-date="${day.toLocaleDateString()}" class="${this.getDayClass(
+                  day
+                )}">${day.getDate()}</li>`
+              );
+            }.bind(this)
+          );
+
+          return days.join("");
+        }
+        /**
+         * Refresh calendar view
+         * @function refreshCalendar
+         */
+        refreshCalendar() {
+          // refresh days-list
+          this.$container.querySelector(
+            ".wc-calendar__days-list"
+          ).innerHTML = this.generateDaysMarkup();
+          // refresh calendar header date
+          this.$container.querySelector(
+            ".wc-calendar__header__date"
+          ).innerHTML = this.getFormattedDate(this.currentMonth);
+        }
+        /**
+         * Switch calendar to previous month
+         * @function prevMonth
+         */
+        prevMonth() {
+          var curYear = this.currentMonth.getFullYear(),
+            curMonth = this.currentMonth.getMonth();
+          // set currentMonth to month before
+          this.currentMonth = new Date(curYear, curMonth - 1, 1);
+          // refresh calendar view
+          this.refreshCalendar();
+        }
+        /**
+         * Switch calendar to next month
+         * @function nextMonth
+         */
+        nextMonth() {
+          var curYear = this.currentMonth.getFullYear(),
+            curMonth = this.currentMonth.getMonth();
+          // set currentMonth to month after
+          this.currentMonth = new Date(curYear, curMonth + 1, 1);
+          // refresh calendar view
+          this.refreshCalendar();
+        }
+        /**
+         * Update calendar options
+         * @function update
+         * @param {string} [option='selectedDate'|'activeDateClass'] - name of option to be updated
+         * @param {string} value - value of option to be updated
+         */
+        update(option, value) {
+          if (option === "selectedDate") {
+            let date = new Date(value);
+
+            if (!isNaN(date.getTime())) {
+              this.selectedDate = new Date(value);
+              this.currentMonth = this.selectedDate;
+            } else {
+              throw new Error("Invalid date format");
+            }
+          } else if (option === "activeDateClass") {
+            this.activeDateClass = value;
+          }
+
+          this.refreshCalendar();
+        }
+        /**
+         * Select day. Used as event handler for day-list__item 'click'
+         * @function selectDay
+         * @prop {Object} event - represents 'click' event object
+         */
+        selectDay(event) {
+          var $target = event.target;
+          // Act only if 'day-list__item' was clicked
+          if ($target.classList.contains("wc-calendar__days-list__item")) {
+            let isPrevMonth = $target.classList.contains(
+                "wc-calendar__days-list__item--prev-month"
+              ),
+              isNextMonth = $target.classList.contains(
+                "wc-calendar__days-list__item--next-month"
+              );
+
+            this.selectedDate = new Date($target.dataset.date);
+
+            // if element represents date from either previous or next month
+            if (isPrevMonth || isNextMonth) {
+              // if previous month
+              if (isPrevMonth) {
+                // switch calendar to month before
+                this.prevMonth();
+                // if next
+              } else {
+                // switch calendar to month after
+                this.nextMonth();
+              }
+              // select date element from currently rendered month
+              $target = this.$container.querySelector(
+                `[data-date="${this.selectedDate.toLocaleDateString()}"]`
+              );
+              // if element represents currently rendered month
+            } else {
+              let $activeItem = this.$container.querySelector(
+                ".wc-calendar__days-list__item--active"
+              );
+              // if there already is element with active class
+              if ($activeItem) {
+                // remove active class from element
+                $activeItem.classList.remove(
+                  "wc-calendar__days-list__item--active"
+                );
+                // if custom active class was specified - remove this class
+                this.activeDateClass &&
+                  $activeItem.classList.remove(this.activeDateClass);
+              }
+            }
+            // add default and custom active classes to selected date element
+            $target.classList.add("wc-calendar__days-list__item--active");
+            this.activeDateClass && $target.classList.add(this.activeDateClass);
+
+            // hyunsladd
+            const day = $(".wc-calendar__days-list__item--active")
+              .attr("data-date")
+              .replace(/\./g, "")
+              .replace(/ /g, "");
+
+            $.ajax({
+              url: "/api/project/list",
+              type: "GET",
+              data: { day },
+            })
+              .done(() => {
+                location.href = "/api/project/" + day;
+              })
+              .fail((request, status, error) => {
+                alert(request, responseText);
+              });
+          }
+        }
+        /**
+         * Generate initial calendar markup
+         * @function generateMarkup
+         */
+        generateMarkup() {
+          // if container query wasn't specified
+          if (!this.$container) {
+            // create new container element
+            let fragment = document.createDocumentFragment(),
+              calendarContainer = document.createElement("div");
+            fragment.appendChild(calendarContainer);
+            // append container to body
+            document.body.appendChild(calendarContainer);
+            // save new container reference
+            this.$container = calendarContainer;
+          }
+          // add default class for container
+          this.$container.classList.add("wc-calendar");
+          // form calendar markup
+          this.$container.innerHTML = `
+      <div class="wc-calendar__header">
+        <button class="wc-calendar__btn wc-calendar__btn--prev">지난 달</button>
+        <div class="wc-calendar__header__date">${this.getFormattedDate(
+          this.currentMonth
+        )}</div>
+        <button class="wc-calendar__btn wc-calendar__btn--next">다음 달</button>
+      </div>
+      <div class="wc-calendar__body">
+        <ul class="wc-calendar__days-names">
+          <li class="wc-calendar__days-names__item">Mon</li>
+          <li class="wc-calendar__days-names__item">Tue</li>
+          <li class="wc-calendar__days-names__item">Wed</li>
+          <li class="wc-calendar__days-names__item">Thu</li>
+          <li class="wc-calendar__days-names__item">Fri</li>
+          <li class="wc-calendar__days-names__item">Sat</li>
+          <li class="wc-calendar__days-names__item">Sun</li>
+        </ul>
+        <ul class="wc-calendar__days-list">
+          ${this.generateDaysMarkup()}
+        </ul>
+      </div>
+      `;
+        }
+        /**
+         * Bootstrap calendar specific events
+         * @function bootstrapEvents
+         */
+        bootstrapEvents() {
+          // prev month button event handler
+          this.$container
+            .querySelector(".wc-calendar__btn--prev")
+            .addEventListener("click", this.prevMonth.bind(this));
+          // next month button event handler
+          this.$container
+            .querySelector(".wc-calendar__btn--next")
+            .addEventListener("click", this.nextMonth.bind(this));
+          // select day item delegated to days-list event handler
+          this.$container
+            .querySelector(".wc-calendar__days-list")
+            .addEventListener("click", this.selectDay.bind(this));
+        }
+      }
+
+      // Testing part. Contains calendar initialization and calendar testing form
+      // handler
+      var calendar = new Calendar({
+        container: ".calendar",
+      });
+
+      function changeCalendarOptions(event) {
+        event.preventDefault();
+
+        var classValue = document.getElementById("class-input").value;
+        var dateValue = document.getElementById("date-input").value;
+
+        classValue.trim() && calendar.update("activeDateClass", classValue);
+        dateValue.trim() && calendar.update("selectedDate", dateValue);
+      }
+
+      document.addEventListener("submit", changeCalendarOptions);
+    </script>
+
+    <!-- Button trigger modal -->
+    <button
+      type="button"
+      class="btn btn-yellow floatbtn"
+      data-toggle="modal"
+      data-target="#centralModalSm"
+      style="
+        position: fixed;
+        text-align: center;
+        left: 90vw;
+        top: 86vh;
+        font-size: 15pt;
+        border-radius: 50px;
+      "
+      title="일기 쓰기"
+    >
+      +
+    </button>
+
+    <!-- Central Modal Small -->
+    <div
+      class="modal fade"
+      id="centralModalSm"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel"
+      aria-hidden="true"
+    >
+      <!-- Change class .modal-sm to change the size of the modal -->
+      <div
+        class="modal-dialog modal-lg"
+        role="document"
+        style="font-family: Nanum Square;"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title w-100" id="myModalLabel">
+              오늘의 이야기를 기록해주세요
+            </h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body" style="text-align: center;">
+            <br />
+            <img
+              src="/images/분노.png"
+              hspace="30"
+              style="width: 50px;"
+              title="분노"
+              class="emo1"
+            />
+            <img
+              src="/images/슬픔.png"
+              hspace="30"
+              style="width: 50px;"
+              title="슬픔"
+              class="emo2"
+            />
+            <img
+              src="/images/행복.png"
+              hspace="30"
+              style="width: 50px;"
+              title="행복"
+              class="emo3"
+            />
+            <img
+              src="/images/간지.png"
+              hspace="30"
+              style="width: 50px;"
+              title="간지"
+              class="emo4"
+            />
+            <img
+              src="/images/조아.png"
+              hspace="30"
+              style="width: 50px;"
+              title="조아"
+              class="emo5"
+            />
+            <br />
+            <br />
+            <br />
+            <form id="createForm">
+              <textarea id="diary" cols="70vw" rows="15vh"></textarea>
+              <br />
+              <button
+                type="button"
+                class="btn btn-blue-grey btn-sm"
+                data-dismiss="modal"
+              >
+                닫기
+              </button>
+              <button type="submit" class="btn btn-deep-orange btn-sm">
+                등록
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Central Modal Small -->
+    <%- include("footer"); %>
+
+    <script>
+      $(function () {
+        $(".emo1").click((event) => {
+          event.preventDefault;
+          for (i = 1; i <= 5; i++) {
+            if ($(".emo" + i).hasClass("selected") === true) {
+              $(".emo" + i).toggleClass("selected");
+              break;
+            }
+          }
+          $(".emo1").toggleClass("selected");
+        });
+      });
+      $(function () {
+        $(".emo2").click((event) => {
+          event.preventDefault;
+          if ($(".emo1").hasClass("selected") === true) {
+            $(".emo1").toggleClass("selected");
+            $(".emo2").toggleClass("selected");
+          } else {
+            for (i = 3; i <= 5; i++) {
+              if ($(".emo" + i).hasClass("selected") === true) {
+                $(".emo" + i).toggleClass("selected");
+                break;
+              }
+            }
+            $(".emo2").toggleClass("selected");
+          }
+        });
+      });
+      $(function () {
+        $(".emo3").click((event) => {
+          event.preventDefault;
+          if ($(".emo1").hasClass("selected") === true) {
+            $(".emo1").toggleClass("selected");
+            $(".emo3").toggleClass("selected");
+          } else if ($(".emo2").hasClass("selected") === true) {
+            $(".emo2").toggleClass("selected");
+            $(".emo3").toggleClass("selected");
+          } else {
+            for (i = 4; i <= 5; i++) {
+              if ($(".emo" + i).hasClass("selected") === true) {
+                $(".emo" + i).toggleClass("selected");
+                break;
+              }
+            }
+            $(".emo3").toggleClass("selected");
+          }
+        });
+      });
+      $(function () {
+        $(".emo4").click((event) => {
+          event.preventDefault;
+          if ($(".emo5").hasClass("selected") === true) {
+            $(".emo5").toggleClass("selected");
+            $(".emo4").toggleClass("selected");
+          } else {
+            for (i = 1; i <= 3; i++) {
+              if ($(".emo" + i).hasClass("selected") === true) {
+                $(".emo" + i).toggleClass("selected");
+                break;
+              }
+            }
+            $(".emo4").toggleClass("selected");
+          }
+        });
+      });
+      $(function () {
+        $(".emo5").click((event) => {
+          event.preventDefault;
+          for (i = 1; i <= 5; i++) {
+            if ($(".emo" + i).hasClass("selected") === true) {
+              $(".emo" + i).toggleClass("selected");
+              break;
+            }
+          }
+          $(".emo5").toggleClass("selected");
+        });
+      });
+
+      $(function () {
+        $("#createForm").submit((event) => {
+          event.preventDefault;
+          for (i = 1; i <= 5; i++) {
+            if ($(".emo" + i).hasClass("selected") === true) {
+              var emotion2 = "emo" + i;
+            }
+          }
+
+          if (emotion2 == "emo1") emotion2 = "분노";
+          else if (emotion2 == "emo2") emotion2 = "슬픔";
+          else if (emotion2 == "emo3") emotion2 = "행복";
+          else if (emotion2 == "emo4") emotion2 = "간지";
+          else if (emotion2 == "emo5") emotion2 = "조아";
+          else emotion2 = "선택하지 않음";
+
+          const emotion = emotion2;
+          const diary = $("#diary").val();
+          const date = new Date();
+          $.ajax({
+            url: "/api/project",
+            type: "POST",
+            data: { emotion, diary, date },
+          })
+            .done(() => {
+              location.href = "/list";
+            })
+            .fail((request, status, error) => {
+              alert(request.responseText);
+            });
+        });
+      });
+    </script>
+  </body>
+</html>

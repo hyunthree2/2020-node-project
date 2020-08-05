@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("header"); %> <%- include("footer"); %> <%- include("sidebar"); %>
+  <head>
+    <style>
+      body {
+        -ms-overflow-style: none;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      .card-text{
+        width:300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .btn1 {
+        left:10vw;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="margin: 10vw;" class="row row-cols-3 row-cols-md-3">
+        <% result.forEach(result => { %>
+        <div class="col mb-4">
+        <!-- Card -->
+        <div class="card h-100">
+          <!--Card image-->
+          <div class="view overlay">
+            <img
+              class="card-img-top"
+              src="/images/<%= result.emotion %>.png"
+              alt="Card image cap"
+            />
+            <a href="#!">
+              <div class="mask rgba-white-slight"></div>
+            </a>
+          </div>
+
+          <!--Card content-->
+          <div class="card-body">
+            <!--Title-->
+            <h4 class="card-title"><%= result.emotion %></h4>
+            <!--Text-->
+            <p class="card-text">
+              <%= result.diary %>
+            </p>
+            <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
+            <button type="button" class="btn btn1 btn-grey btn-md" onclick="location.href='/api/project/detail/<%=result.id%>'">
+              더 보기
+            </button>
+            <button id = "deleteBtn" type="button" class="btn btn1 btn-deep-orange btn-md" onclick="location.href='/api/project/delete/<%=result.id%>'">
+                삭제
+            </button>
+          </div>
+        </div>
+    </div>
+    <% }) %>
+    
+  </body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("header"); %> <%- include("footer"); %>
+  <head>
+    <style>
+      body {
+        -ms-overflow-style: none;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      .background {
+        z-index: 1;
+        position: relative;
+      }
+      .emotion {
+        z-index: 2;
+        position: absolute;
+        top: 15vw;
+        left: 11vw;
+      }
+      .child {
+        width: 30vw;
+      }
+      .emo {
+        z-index: 2;
+        position: absolute;
+        top: 50vw;
+        left: 26vw;
+        transform: translateX(-50%);
+        font-size: 35pt;
+        font-family: "나눔스퀘어";
+      }
+      .diary {
+        z-index: 2;
+        position: absolute;
+        font-family: "나눔스퀘어";
+        font-size: 17pt;
+        top: 14vw;
+        left: 59vw;
+        width: 29vw;
+        height: 43vw;
+        overflow: auto;
+        text-overflow: clip;
+      }
+      .button {
+        z-index: 2;
+        position: absolute;
+        top: 60vw;
+        left: 85vw;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background">
+      <img class="parent" src="/images/detailbg.png" style="width: 100%;" />
+    </div>
+    <div class="emotion">
+      <img class="child" src="/images/<%=result.emotion%>.png" />
+    </div>
+    <div class="emo">
+      <%=result.emotion%>
+    </div>
+    <div class="diary">
+      <p class="text">
+        <%=result.diary%>
+      </p>
+    </div>
+    <div class="button">
+      <button
+        type="button"
+        class="btn btn-brown"
+        onclick="location.href='/api/project/list'"
+      >
+        목록
+      </button>
+    </div>
+  </body>
+</html>

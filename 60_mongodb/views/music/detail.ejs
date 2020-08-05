@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../header"); %>
+  <body>
+    <%- include("../menu"); %>
+    <!-- Material input -->
+    <div class="md-form">
+      <input
+        type="text"
+        id="singer"
+        value="<%= result.singer %>"
+        class="form-control"
+        readonly
+      />
+      <label for="singer">Singer</label>
+    </div>
+    <div class="md-form">
+      <input
+        type="text"
+        id="title"
+        value="<%= result.title %>"
+        class="form-control"
+        readonly
+      />
+      <label for="title">Title</label>
+    </div>
+    <button class="btn aqua-gradient" onclick="location.href='/api/music'">
+      목록
+    </button>
+    <button
+      class="btn purple-gradient"
+      onclick="location.href='/api/music/<%= result._id%>/edit'"
+    >
+      수정
+    </button>
+    <button id="deleteBtn" class="btn peach-gradient">
+      삭제
+    </button>
+    <%- include("../footer"); %>
+    <script>
+      // 스크립트는 footer 아래에... 왜지? 까먹음
+      $(function () {
+        // 삭제
+        $("#deleteBtn").on("click", () => {
+          const result = confirm("삭제하시겠습니까?");
+          if (result) {
+            $.ajax({
+              url: "/api/music/<%=result._id%>",
+              type: "DELETE",
+            })
+              .done(() => {
+                location.href = "/api/music";
+              })
+              .fail((request, status, error) => {
+                alert(request.responseText);
+              });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

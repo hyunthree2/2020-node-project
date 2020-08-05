@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      .btn1img,
+      .btn2img,
+      .btn3img {
+        -webkit-transform: scale(1);
+        -moz-transform: scale(1);
+        -ms-transform: scale(1);
+        -o-transform: scale(1);
+        transform: scale(1);
+        -webkit-transition: 0.3s;
+        -moz-transition: 0.3s;
+        -ms-transition: 0.3s;
+        -o-transition: 0.3s;
+        transition: 0.3s;
+      }
+      .btn1img:hover,
+      .btn2img:hover,
+      .btn3img:hover {
+        -webkit-transform: scale(1.5);
+        -moz-transform: scale(1.5);
+        -ms-transform: scale(1.5);
+        -o-transform: scale(1.5);
+        transform: scale(1.5);
+      }
+      body {
+        -ms-overflow-style: none;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      .background {
+        z-index: 1;
+        position: relative;
+      }
+      .btn1 {
+        z-index: 2;
+        position: absolute;
+        left: 30.5vw;
+        top: 8.3vw;
+      }
+      .btn1img {
+        width: 8vw;
+        height: 16vw;
+      }
+      .btn2 {
+        z-index: 2;
+        position: absolute;
+        left: 26vw;
+        top: 45.9vw;
+      }
+      .btn2img {
+        width: 25vw;
+        height: 18vw;
+      }
+      .btn3 {
+        z-index: 2;
+        position: absolute;
+        left: 73vw;
+        top: 26.5vw;
+      }
+      .btn3img {
+        width: 22vw;
+        height: 24vw;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include("header");%> <%- include("footer")%>
+    <div class="background">
+      <img class="parent" src="/images/mainbg.png" style="width: 100%;" />
+    </div>
+    <div class="btn1">
+      <img
+        class="btn1img"
+        src="/images/listicon.png"
+        title="기록하기"
+        onclick="location.href='/list'"
+      />
+    </div>
+    <div class="btn2">
+      <img
+        class="btn2img"
+        src="/images/staticon.png"
+        title="통계보기"
+        onclick="location.href='/api/project/stat'"
+      />
+    </div>
+    <div class="btn3">
+      <img
+        class="btn3img"
+        src="/images/profileicon.png"
+        title="내 정보"
+        onclick="location.href='/profile'"
+      />
+    </div>
+  </body>
+</html>

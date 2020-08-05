@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../header"); %>
+  <body>
+    <%- include("../menu"); %>
+    <!-- Default form register -->
+    <form
+      class="text-center border border-light p-5"
+      action="#!"
+      id="loginform"
+    >
+      <p class="h4 mb-4">Log in</p>
+
+      <!-- E-mail -->
+      <input
+        type="email"
+        id="email"
+        required
+        class="form-control mb-4"
+        placeholder="E-mail"
+      />
+
+      <!-- Password -->
+      <input
+        type="password"
+        id="password"
+        required
+        class="form-control"
+        placeholder="Password"
+        aria-describedby="defaultRegisterFormPasswordHelpBlock"
+      />
+
+      <!-- Sign up button -->
+      <button class="btn btn-info my-4 btn-block" type="submit">Log In</button>
+
+      <!-- Terms ofs service -->
+      <p>
+        By clicking <em>Sign up</em> you agree to our
+        <a href="" target="_blank">terms of service</a>
+      </p>
+    </form>
+
+    <!-- Default form register -->
+    <%- include("../footer"); %>
+    <script>
+      $(function () {
+        $("#loginform").submit((event) => {
+          event.preventDefault();
+          // 등록
+          const email = $("#email").val();
+          const password = $("#password").val();
+          $.ajax({
+            url: "/api/user/login",
+            type: "POST",
+            data: { email, password },
+          })
+            .done(() => {
+              location.href = "/";
+            })
+            .fail((request, status, error) => {
+              alert(request.responseText);
+            });
+        });
+      });
+    </script>
+  </body>
+</html>

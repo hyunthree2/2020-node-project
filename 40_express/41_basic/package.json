@@ -1,0 +1,16 @@
+{
+  "name": "41_basic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app2.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "moment": "^2.25.3",
+    "morgan": "^1.10.0"
+  }
+}

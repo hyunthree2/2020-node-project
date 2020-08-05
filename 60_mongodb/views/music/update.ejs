@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../header"); %>
+  <body>
+    <%- include("../menu"); %>
+    <form id="updateForm">
+    <!-- Material input -->
+    <div class="md-form">
+      <input type="text" id="singer" class="form-control" value="<%= result.singer %>" required />
+      <label for="singer">Input Singer</label>
+    </div>
+    <div class="md-form">
+      <input type="text" id="title" class="form-control" value="<%= result.title %>" required />
+      <label for="title">Input Title</label>
+    </div>
+    <button type=""submit" class="btn aqua-gradient">
+      저장
+    </button>
+  </form>
+    <%- include("../footer"); %>
+    <script>
+      $(function() {
+        $("#updateForm").submit((event) => {
+          event.preventDefault();
+          // 수정
+          const singer = $("#singer").val();
+          const title = $("#title").val();
+
+          $.ajax({
+            url: "/api/music/<%= result._id %>",
+            type: "PUT",
+            data: {singer, title},
+          }).done(() => {
+            location.href="/api/music/<%= result._id %>";
+          }).fail((request, stauts, error) => {
+            alert(request.responseText);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

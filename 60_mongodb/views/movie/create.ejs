@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../header"); %>
+  <body>
+    <%- include("../menu"); %>
+    <form id="createForm">
+    <!-- Material input -->
+    <div class="md-form">
+      <input type="text" id="director" class="form-control" required />
+      <label for="director">Input Director</label>
+    </div>
+    <div class="md-form">
+      <input type="text" id="title" class="form-control" required />
+      <label for="title">Input Title</label>
+    </div>
+    <div class="md-form">
+      <input type="number" id="year" class="form-control" required />
+      <label for="year">Input Year</label>
+    </div>
+    <button type=""submit" class="btn aqua-gradient">
+      저장
+    </button>
+  </form>
+    <%- include("../footer"); %>
+    <script>
+      $(function() {
+        $("#createForm").submit((event) => {
+          event.preventDefault();
+          // 등록
+          const director = $("#director").val();
+          const title = $("#title").val();
+          const year = $("#year").val();
+          $.ajax({
+            url: "/api/movie",
+            type: "POST",
+            data: {director, title, year},
+          }).done(() => {
+            location.href="/api/movie";
+          }).fail((request, stauts, error) => {
+            alert(request.responseText);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

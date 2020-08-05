@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("sidebar"); %> <%- include("header"); %> <%- include("footer"); %>
+  <head>
+    <style>
+      @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+      @import url(//cdn.rawgit.com/hiun/NanumSquare/master/NanumSquare.css);
+      body {
+        -ms-overflow-style: none;
+        margin: 0px;
+        padding: 0px;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      .background {
+        z-index: 1;
+        position: relative;
+      }
+      .profile {
+        width: 30vw;
+        height: 10vw;
+        position: absolute;
+        z-index: 2;
+        left: 35vw;
+        top: 22vw;
+        font-family: "Nanum Square";
+        font-size: 20pt;
+      }
+      #name {
+        font-size: 30pt;
+        border: none;
+      }
+      #email {
+        border: none;
+      }
+      .btn-grey {
+        position: absolute;
+        left: 12vw;
+      }
+      .btn-deep-orange {
+        position: absolute;
+        left: 20vw;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background">
+      <img class="parent" src="/images/emptybg.png" style="width: 100%;" />
+    </div>
+    <div class="profile">
+      안녕하세요,<br /><br /><br />
+      <form
+        id="profileForm"
+        method="get"
+        action="/api/project/<%= user.id %>/edit"
+      >
+        <input
+          type="text"
+          id="name"
+          value="<%= user.name %>"
+          size="10"
+          readonly
+        />님<br /><br /><br />
+        계정 정보<br />
+        <input
+          type="text"
+          id="email"
+          value="<%= user.email %>"
+          size="20"
+          readonly
+        /><br /><br /><br />
+        <button class="btn btn-grey">
+          이름 수정
+        </button>
+      </form>
+      <button
+        class="btn btn-deep-orange"
+        onclick="location.href='/api/user/logout'"
+      >
+        로그아웃
+      </button>
+    </div>
+  </body>
+</html>

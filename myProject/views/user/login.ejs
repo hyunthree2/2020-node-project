@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      body {
+        -ms-overflow-style: none;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      .background {
+        z-index: 1;
+        position: relative;
+      }
+
+      #loginform {
+        width: 30vw;
+        height: 10vw;
+        position: absolute;
+        z-index: 2;
+        left: 32vw;
+        top: 22vw;
+        font-family: "Nanum Square";
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background">
+      <img class="parent" src="/images/emptybg.png" style="width: 100%;" />
+    </div>
+
+    <!-- Default form login -->
+    <form class="text-center" id="loginform">
+      <p class="h4 mb-4">로그인</p>
+
+      <!-- Email -->
+      <input
+        type="email"
+        id="email"
+        class="form-control mb-4"
+        placeholder="Example@email.com"
+        required
+      />
+
+      <!-- Password -->
+      <input
+        type="password"
+        id="password"
+        class="form-control mb-4"
+        placeholder="Password"
+        required
+      />
+
+      <!-- Sign in button -->
+      <button
+        style="font-size: 1.5vw;"
+        class="btn btn-yellow btn-block my-4"
+        type="submit"
+      >
+        로그인
+      </button>
+
+      <!-- Register -->
+      <p style="font-size: 1.3vw;">
+        아직 회원이 아니신가요?
+        <a href="/api/user/signup">가입하기</a>
+      </p>
+    </form>
+    <!-- Default form login -->
+    <%- include("../footer"); %> <%- include("../header"); %>
+    <script>
+      $(function () {
+        $("#loginform").submit((event) => {
+          event.preventDefault();
+
+          const email = $("#email").val();
+          const password = $("#password").val();
+          $.ajax({
+            url: "/api/user/login",
+            type: "post",
+            data: { email, password },
+          })
+            .done(() => {
+              location.href = "/main";
+            })
+            .fail((request, status, error) => {
+              alert(request.responseText);
+            });
+        });
+      });
+    </script>
+  </body>
+</html>

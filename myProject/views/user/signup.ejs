@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+      @import url(//cdn.rawgit.com/hiun/NanumSquare/master/NanumSquare.css);
+      body {
+        -ms-overflow-style: none;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      .background {
+        z-index: 1;
+        position: relative;
+      }
+
+      #signupform {
+        width: 30vw;
+        height: 10vw;
+        position: absolute;
+        z-index: 2;
+        left: 32vw;
+        top: 22vw;
+        font-family: "Nanum Square";
+      }
+    </style>
+  </head>
+  <body>
+    <%- include("../header"); %>
+    <div class="background">
+      <img class="parent" src="/images/emptybg.png" style="width: 100%;" />
+    </div>
+
+    <!-- Default form register -->
+    <form class="text-center" action="#!" id="signupform">
+      <p class="h4 mb-4">신규 회원 가입</p>
+
+      <div class="form-row mb-4">
+        <div class="col">
+          <!-- First name -->
+          <input
+            type="text"
+            id="name"
+            class="form-control"
+            placeholder="Name"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- E-mail -->
+      <input
+        type="email"
+        id="email"
+        required
+        class="form-control mb-4"
+        placeholder="Example@email.com"
+      />
+
+      <!-- Password -->
+      <input
+        type="password"
+        id="password"
+        class="form-control"
+        placeholder="Password"
+        aria-describedby="defaultRegisterFormPasswordHelpBlock"
+      />
+
+      <!-- Sign up button -->
+      <button
+        style="font-size: 1.3vw;"
+        class="btn btn-yellow my-4 btn-block"
+        type="submit"
+      >
+        가입하기
+      </button>
+      <p style="font-size: 1.1vw;">
+        이미 회원이신가요?
+        <a href="/api/user/login">로그인하러 가기</a>
+      </p>
+    </form>
+
+    <!-- Default form register -->
+
+    <%- include("../footer"); %> <%- include("../header"); %>
+
+    <script>
+      $(function () {
+        $("#signupform").submit((event) => {
+          event.preventDefault();
+          // 등록
+          const name = $("#name").val();
+          const email = $("#email").val();
+          const password = $("#password").val();
+          $.ajax({
+            url: "/api/user/signup",
+            type: "POST",
+            data: { name, email, password },
+          })
+            .done(() => {
+              location.href = "/api/user/login";
+            })
+            .fail((request, status, error) => {
+              alert(request.responseText);
+            });
+        });
+      });
+    </script>
+  </body>
+</html>

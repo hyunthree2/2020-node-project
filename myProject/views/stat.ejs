@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("header"); %> <%- include("footer"); %> <%- include("sidebar"); %>
+  <head>
+    <style>
+      body {
+        -ms-overflow-style: none;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      canvas {
+        padding: 0;
+        margin: auto;
+        display: block;
+        position: absolute;
+        top: 50vh;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background">
+      <img class="parent" src="/images/statbg.png" style="width: 100%;" />
+    </div>
+
+    <canvas id="pieChart" style="max-width: 90vw;"></canvas>
+
+    <% var e1=0, e2=0, e3=0, e4=0, e5=0 %> <% result.forEach(result => {
+    if(result.emotion == "분노") { e1 = e1 + 1; } else if(result.emotion ==
+    "슬픔") { e2 = e2 + 1; } else if(result.emotion == "행복") { e3 = e3 + 1; }
+    else if(result.emotion == "간지") { e4 = e4 +1; } else if(result.emotion ==
+    "조아") { e5 = e5 +1; }}) %> <%console.log(e1, e2, e3, e4, e5)%>
+    <script>
+      //pie
+      var ctxP = document.getElementById("pieChart").getContext("2d");
+      var myPieChart = new Chart(ctxP, {
+        type: "pie",
+        data: {
+          labels: ["분노", "슬픔", "행복", "간지", "조아"],
+          datasets: [
+            {
+              data: [<%= e1 %>, <%= e2 %>, <%= e3 %>, <%= e4 %>, <%= e5 %>],
+              backgroundColor: [
+                "#F7464A",
+                "#84b4e0",
+                "#FDB45C",
+                "#9b61c2",
+                "#8de390",
+              ],
+              hoverBackgroundColor: [
+                "#FF5A5E",
+                "#afd0ed",
+                "#FFC870",
+                "#c487ed",
+                "#a6eda8",
+              ],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+        },
+      });
+    </script>
+  </body>
+</html>

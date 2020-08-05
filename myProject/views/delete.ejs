@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("header"); %> <%-include("footer"); %>
+  <head>
+    <style>
+      body {
+        -ms-overflow-style: none;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      img {
+        position: relative;
+        width: 30vw;
+        height: 30vw;
+        left: 35vw;
+        top: 5vw;
+      }
+      p {
+        position: relative;
+        left: 38vw;
+        top: 9vw;
+        font-size: 25pt;
+        font-family: "나눔스퀘어";
+      }
+      .btn {
+        position: relative;
+        left: 45vw;
+        top: 10vw;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="image">
+      <img src="/images/슬픔.png" />
+    </div>
+    <p>정상적으로 삭제되었습니다</p>
+    <button
+      id="deleteBtn"
+      type="button"
+      class="btn btn-yellow"
+      onclick="location.href='/api/project/list'"
+    >
+      기록하러 가기
+    </button>
+  </body>
+</html>
